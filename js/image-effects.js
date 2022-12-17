@@ -56,4 +56,5 @@ const disableSlider = () => {
   sliderWrapper.classList.add('hidden');
 };
 
+
 export {onFilterChange, createSlider, disableSlider};

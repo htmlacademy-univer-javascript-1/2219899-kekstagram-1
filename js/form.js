@@ -1,35 +1,23 @@
-import {isEscapeKey, showAlert} from './util.js';
+import {isEscapeKey} from './util.js';
 import {validateForm, onFocusPreventClose} from './validate-form.js';
 import {onFilterChange, disableSlider} from './image-effects.js';
 import {onResizeButtonClick} from './image-scale.js';
 import {sendData} from './api.js';
+import {showMessage} from './message.js';
 
+const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 const image = document.querySelector('.img-upload__preview').querySelector('img');
 const effectsField = document.querySelector('.img-upload__effects');
-
-//Отображение формы
 const form = document.querySelector('.img-upload__form');
 const overlay = document.querySelector('.img-upload__overlay');
 const uploadButton = document.querySelector('#upload-file');
 const cancelButton = document.querySelector('#upload-cancel');
 const hashtagsInput = document.querySelector('.text__hashtags');
 const commentInput = document.querySelector('.text__description');
-const submitButton = document.querySelector('.img-upload__submit');
 const fileChooser = document.querySelector('.img-upload__start input[type=file]');
 
-
-const blockSubmitButton = () => {
-  submitButton.textContent = 'Публикую...';
-  submitButton.disabled = true;
-};
-
-const unblockSubmitButton = () => {
-  submitButton.disabled = false;
-  submitButton.textContent = 'Опубликовать';
-};
-
 const onEscapeKeydown = (evt) => {
-  if (isEscapeKey(evt)) {
+  if (isEscapeKey(evt) && document.querySelector('.error') === null) {
     closeOverlay();
   }
 };
@@ -53,29 +41,34 @@ const openOverlay = () => {
   commentInput.onkeydown = (evt) => onFocusPreventClose(evt);
   hashtagsInput.onkeydown = (evt) => onFocusPreventClose(evt);
   effectsField.addEventListener('change', onFilterChange);
-  onResizeButtonClick();
 };
 
 const renderUploadForm = () => {
+  onResizeButtonClick();
   uploadButton.addEventListener('change', openOverlay);
   fileChooser.addEventListener('change', () => {
     const file = fileChooser.files[0];
-    image.src = URL.createObjectURL(file);
+    const fileName = file.name.toLowerCase();
+    const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+    if (matches) {
+      image.src = URL.createObjectURL(file);
+    }
   });
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
     if (validateForm(form, hashtagsInput, commentInput)) {
       sendData(() => {
-        blockSubmitButton();
-        setTimeout(showAlert, 1500);
+        showMessage('success');
+        setTimeout(closeOverlay, 500);
       },
       () => {
-        showAlert(true);
-      },
-      new FormData(evt.target), unblockSubmitButton);
+        showMessage('error');
+      }
+      , new FormData(evt.target));
     }
   });
 };
+
 
 export {renderUploadForm, closeOverlay};
 

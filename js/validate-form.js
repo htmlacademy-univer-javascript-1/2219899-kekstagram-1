@@ -1,14 +1,22 @@
 import {isRightString, isEscapeKey} from './util.js';
 
-const hashtagRule = /^#[А-яа-яA-za-zёЁ]{1,19}$/;
+const hashtagRule = /^#[А-Яа-яA-Za-zёЁ]{1,19}$/;
 
 const isCorrectHashtags = (value) => {
-  const hashtags = value.split().map((hashtag) => hashtag.toLowerCase());
-  const uniqueHashtags = [...new Set(hashtags)];
-  return value === '' || hashtags.every((hashtag) => hashtagRule.test(hashtag)) && hashtags.length <= 5 && hashtags.length === uniqueHashtags.length;
+  const hashtags = value.split(' ').map((hashtag) => hashtag.toLowerCase());
+  return value === '' || hashtags.every((hashtag) => hashtagRule.test(hashtag));
 };
 
-const isCorrectComment = (comment) => isRightString(comment, 140);
+const checkCorrectCommentLength = (comment) => isRightString(comment, 140);
+const checkCorrectHashtagLength = (hashtags) => {
+  hashtags = hashtags.split(' ');
+  return hashtags.length <= 5;
+};
+const checkUniqueHashtag = (value) => {
+  const hashtags = value.split(' ').map((hashtag) => hashtag.toLowerCase());
+  const uniqueHashtags = [...new Set(hashtags)];
+  return hashtags.length === uniqueHashtags.length;
+};
 
 const onFocusPreventClose = (evt) => {
   if (isEscapeKey(evt)) {
@@ -22,11 +30,13 @@ const validateForm = (form, hashtags, comment) => {
     errorTextParent: 'img-upload__field-wrapper',
     errorTextClass: 'img-upload__field-wrapper__error'
   });
-  pristine.addValidator(hashtags, isCorrectHashtags, 'Поле ввода имеет уникальные хештеги, которые начинаются с решетки и имеют длину не более 20 символов');
-  pristine.addValidator(comment, isCorrectComment, 'Комментарий не более 140 символов');
+  pristine.addValidator(hashtags, isCorrectHashtags, 'Хештег должен начинаться с решётки и быть не более 20 символов');
+  pristine.addValidator(hashtags, checkCorrectHashtagLength, 'Может быть указано не более 5 хештегов');
+  pristine.addValidator(hashtags, checkUniqueHashtag, 'Хештеги не могут повторяться');
+  pristine.addValidator(comment, checkCorrectCommentLength, 'Комментарий не более 140 символов');
 
   return pristine.validate();
 };
 
-export {validateForm, onFocusPreventClose};
 
+export {validateForm, onFocusPreventClose};

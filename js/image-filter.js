@@ -1,10 +1,10 @@
 import {appendThumbnails} from './gallery.js';
-import {getUniqueElementsArray, debounce} from './util.js';
+import {getRandomElementsArray, debounce} from './util.js';
 
 const RANDOM_AMOUNT = 10;
 
 const filterSection = document.querySelector('.img-filters');
-const defaultfFilter = document.querySelector('#filter-default');
+const defaultFilter = document.querySelector('#filter-default');
 const randomFilter = document.querySelector('#filter-random');
 const discussedFilter = document.querySelector('#filter-discussed');
 
@@ -25,26 +25,27 @@ const comparePicturesByComments = (pictureA, pictureB) => pictureB.comments.leng
 
 const getSortedPictures = (pictures) => pictures.slice().sort(comparePicturesByComments);
 
-const addThumbnail = (array, button) => {
+const filterThumbnail = (array, button) => {
   removePictures();
   removeActiveClass();
   appendThumbnails(array);
   button.classList.add('img-filters__button--active');
 };
 
-const showFilteredPictures = (pictures) => {
+const showPictures = (pictures) => {
   appendThumbnails(pictures);
   filterSection.classList.remove('img-filters--inactive');
-  defaultfFilter.addEventListener('click', debounce(() => {
-    addThumbnail(pictures, defaultfFilter);
+  defaultFilter.addEventListener('click', debounce(() => {
+    filterThumbnail(pictures, defaultFilter);
   }));
   randomFilter.addEventListener('click', debounce(() => {
-    addThumbnail(getUniqueElementsArray(pictures, RANDOM_AMOUNT), randomFilter);
+    filterThumbnail(getRandomElementsArray(pictures, RANDOM_AMOUNT), randomFilter);
   }));
   discussedFilter.addEventListener('click', debounce(() => {
-    addThumbnail(getSortedPictures(pictures), discussedFilter);
+    filterThumbnail(getSortedPictures(pictures), discussedFilter);
   }));
 
 };
 
-export {showFilteredPictures};
+
+export {showPictures};

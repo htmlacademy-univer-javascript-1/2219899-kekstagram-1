@@ -1,9 +1,9 @@
-const image = document.querySelector('.img-upload__preview').querySelector('img');
-
 const STEP = 25;
 const RANGE = {min: 25, max: 100};
-const scaleSmaller = document.querySelector('.scale__control--smaller');
-const scaleBigger = document.querySelector('.scale__control--bigger');
+
+
+const scaleSection = document.querySelector('.img-upload__scale');
+const image = document.querySelector('.img-upload__preview').querySelector('img');
 const scaleValue = document.querySelector('.scale__control--value');
 
 const checkTheScaleValue = (value) => {
@@ -20,8 +20,15 @@ const changeScaleValue = (summand) => {
 };
 
 const onResizeButtonClick = () => {
-  scaleSmaller.addEventListener('click', () => changeScaleValue(-1));
-  scaleBigger.addEventListener('click', () => changeScaleValue(1));
+  scaleSection.addEventListener('click', (evt) => {
+    if (evt.target.classList.contains('scale__control--smaller')){
+      changeScaleValue(-1);
+    }
+    else if (evt.target.classList.contains('scale__control--bigger')) {
+      changeScaleValue(1);
+    }
+  });
 };
+
 
 export {onResizeButtonClick};

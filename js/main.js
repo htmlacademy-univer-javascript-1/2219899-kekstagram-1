@@ -1,8 +1,10 @@
 import {renderUploadForm} from './form.js';
 import {createSlider} from './image-effects.js';
 import {getData} from './api.js';
-import {showFilteredPictures} from './image-filter.js';
+import {showPictures} from './image-filter.js';
+import {showGetMethodError} from './util.js';
 
-getData(showFilteredPictures);
+
+getData(showPictures, showGetMethodError);
 renderUploadForm();
 createSlider();

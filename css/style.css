@@ -1179,7 +1179,7 @@ main {
 
   padding-top: 250px;
 
-  width: 600px;
+  width: 605px;
   height: 100%;
 
   font-family: "Open Sans", "Arial", sans-serif;
@@ -1217,6 +1217,7 @@ main {
 .success__inner {
   position: relative;
   width: 600px;
+
   padding: 50px 20px;
   padding-top: 150px;
   margin-top: 200px;
